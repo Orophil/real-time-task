@@ -1,0 +1,34 @@
+// Prisma schema for the Hyring real-time task board.
+// One shared board, anonymous users, three columns via the Status enum.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// Enum order (todo < in_progress < done) doubles as the natural column order,
+// so `ORDER BY status, position` returns columns left-to-right already grouped.
+enum Status {
+  todo
+  in_progress
+  done
+}
+
+model Card {
+  id        String   @id @default(uuid()) @db.Uuid
+  title     String
+  status    Status   @default(todo)
+  // Float position with midpoint insertion: reordering writes a single row.
+  position  Float
+  // Bumped on every write; used for last-write-wins conflict handling.
+  version   Int      @default(1)
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@index([status, position])
+  @@map("cards")
+}
