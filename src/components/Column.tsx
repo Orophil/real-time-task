@@ -1,6 +1,11 @@
 "use client";
 
 import { useState } from "react";
+import { useDroppable } from "@dnd-kit/core";
+import {
+  SortableContext,
+  verticalListSortingStrategy,
+} from "@dnd-kit/sortable";
 import { CardItem } from "./CardItem";
 import { addCard } from "@/lib/commands";
 import type { CardDTO, Status } from "@/lib/types";
@@ -10,6 +15,9 @@ const DOT: Record<Status, string> = {
   in_progress: "#f59e0b",
   done: "#22c55e",
 };
+
+// Droppable id for a column (prefixed to disambiguate from card UUIDs).
+export const columnDroppableId = (status: Status) => `col:${status}`;
 
 export function Column({
   status,
@@ -22,6 +30,7 @@ export function Column({
 }) {
   const [adding, setAdding] = useState(false);
   const [draft, setDraft] = useState("");
+  const { setNodeRef, isOver } = useDroppable({ id: columnDroppableId(status) });
 
   const submit = () => {
     const value = draft.trim();
@@ -38,11 +47,19 @@ export function Column({
         <span className="column__count">{cards.length}</span>
       </header>
 
-      <div className="column__cards">
-        {cards.map((card) => (
-          <CardItem key={card.id} card={card} />
-        ))}
-      </div>
+      <SortableContext
+        items={cards.map((c) => c.id)}
+        strategy={verticalListSortingStrategy}
+      >
+        <div
+          ref={setNodeRef}
+          className={`column__cards ${isOver ? "column__cards--over" : ""}`}
+        >
+          {cards.map((card) => (
+            <CardItem key={card.id} card={card} />
+          ))}
+        </div>
+      </SortableContext>
 
       {adding ? (
         <div className="addbox">

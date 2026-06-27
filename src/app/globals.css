@@ -125,11 +125,39 @@ body {
   padding: 10px;
   box-shadow: 0 1px 1px rgba(0, 0, 0, 0.03);
 }
+.card__top {
+  display: flex;
+  align-items: flex-start;
+  gap: 6px;
+}
+.card__grip {
+  border: none;
+  background: transparent;
+  color: #cbd5e1;
+  cursor: grab;
+  font-size: 14px;
+  line-height: 1.2;
+  padding: 0 2px;
+  touch-action: none;
+}
+.card__grip:active {
+  cursor: grabbing;
+}
+.card--overlay {
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.18);
+  transform: rotate(1.5deg);
+}
 .card__title {
   font-size: 14px;
   line-height: 1.35;
   word-break: break-word;
   cursor: text;
+  flex: 1;
+}
+.column__cards--over {
+  outline: 2px dashed #93c5fd;
+  outline-offset: 3px;
+  border-radius: 8px;
 }
 .card__input {
   width: 100%;
