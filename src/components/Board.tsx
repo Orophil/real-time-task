@@ -110,7 +110,7 @@ export function Board({ initialCards }: { initialCards: CardDTO[] }) {
         </div>
         <DragOverlay>
           {activeCard ? (
-            <div className="card card--overlay">
+            <div className={`card card--overlay card--${activeCard.status}`}>
               <div className="card__top">
                 <span className="card__grip">⠿</span>
                 <div className="card__title">{activeCard.title}</div>

@@ -40,7 +40,7 @@ export function CardItem({ card }: { card: CardDTO }) {
     <div
       ref={setNodeRef}
       style={style}
-      className="card"
+      className={`card card--${card.status}`}
       title="Drag to reorder / move"
       {...attributes}
       // Whole card is the drag handle, except while renaming (so you can
