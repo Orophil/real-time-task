@@ -1,11 +1,8 @@
 import { Prisma } from "@prisma/client";
 import type { Card } from "@prisma/client";
 import { prisma } from "./prisma";
+import { POSITION_STEP } from "./positions";
 import type { CardDTO, Status } from "./types";
-
-// Gap between appended cards. Large gap leaves room for midpoint inserts on
-// drag-and-drop without ever needing to renumber the whole column.
-export const POSITION_STEP = 1000;
 
 export function serialize(card: Card): CardDTO {
   return {
@@ -40,12 +37,18 @@ export async function listCards(): Promise<CardDTO[]> {
 }
 
 export async function createCard(input: {
+  id?: string;
   title: string;
   status: Status;
 }): Promise<CardDTO> {
   const position = await endPosition(input.status);
   const card = await prisma.card.create({
-    data: { title: input.title, status: input.status, position },
+    data: {
+      ...(input.id ? { id: input.id } : {}),
+      title: input.title,
+      status: input.status,
+      position,
+    },
   });
   return serialize(card);
 }

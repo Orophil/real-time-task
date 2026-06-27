@@ -39,3 +39,15 @@ export function parseVersion(value: unknown): number {
   }
   return value;
 }
+
+const UUID_RE =
+  /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+
+// Clients may supply the card id so an optimistic create is idempotent
+// (a retry with the same id won't duplicate the row).
+export function parseId(value: unknown): string {
+  if (typeof value !== "string" || !UUID_RE.test(value)) {
+    throw new ValidationError("id must be a valid UUID");
+  }
+  return value;
+}

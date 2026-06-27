@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createCard, listCards } from "@/lib/cards";
-import { parseStatus, parseTitle, ValidationError } from "@/lib/validation";
+import { parseId, parseStatus, parseTitle, ValidationError } from "@/lib/validation";
 import { broadcast } from "@/lib/broadcast";
 
 // Node.js runtime so route handlers share the process (and globalThis.__broadcast)
@@ -29,8 +29,9 @@ export async function POST(req: NextRequest) {
     const data = body as Record<string, unknown>;
     const title = parseTitle(data?.title);
     const status = parseStatus(data?.status);
+    const id = data?.id !== undefined ? parseId(data.id) : undefined;
 
-    const card = await createCard({ title, status });
+    const card = await createCard({ id, title, status });
     // DB commit succeeded -> now (and only now) broadcast to everyone else.
     broadcast({ type: "card.created", payload: card, senderId });
 
