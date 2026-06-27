@@ -74,9 +74,23 @@ export function Board({ initialCards }: { initialCards: CardDTO[] }) {
     const list = selectColumn(map, targetStatus).filter(
       (c) => c.id !== activeIdStr,
     );
-    const index = overId.startsWith("col:")
-      ? list.length // dropped on empty space -> append
-      : Math.max(0, list.findIndex((c) => c.id === overId));
+
+    let index: number;
+    if (overId.startsWith("col:")) {
+      index = list.length; // dropped on empty space -> append
+    } else {
+      const overIndex = Math.max(0, list.findIndex((c) => c.id === overId));
+      const over = map[overId];
+      // Dropping onto a card inserts *before* it when dragging up, but *after*
+      // it when dragging down (the active card started above the target in the
+      // same column). Without this, downward moves land before the target and
+      // never pass it — so cards could only move up. (standard sortable rule)
+      const draggingDown =
+        over != null &&
+        moving.status === targetStatus &&
+        moving.position < over.position;
+      index = draggingDown ? overIndex + 1 : overIndex;
+    }
 
     const before = index > 0 ? list[index - 1].position : null;
     const after = index < list.length ? list[index].position : null;
