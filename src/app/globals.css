@@ -124,6 +124,11 @@ body {
   border-radius: 9px;
   padding: 10px;
   box-shadow: 0 1px 1px rgba(0, 0, 0, 0.03);
+  cursor: grab;
+  touch-action: none;
+}
+.card:active {
+  cursor: grabbing;
 }
 .card__top {
   display: flex;

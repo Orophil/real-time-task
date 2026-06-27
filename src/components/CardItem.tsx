@@ -37,17 +37,20 @@ export function CardItem({ card }: { card: CardDTO }) {
   };
 
   return (
-    <div ref={setNodeRef} style={style} className="card">
+    <div
+      ref={setNodeRef}
+      style={style}
+      className="card"
+      title="Drag to reorder / move"
+      {...attributes}
+      // Whole card is the drag handle, except while renaming (so you can
+      // select text in the input without starting a drag).
+      {...(editing ? {} : listeners)}
+    >
       <div className="card__top">
-        <button
-          className="card__grip"
-          title="Drag to reorder / move"
-          aria-label="Drag handle"
-          {...attributes}
-          {...listeners}
-        >
+        <span className="card__grip" aria-hidden="true">
           ⠿
-        </button>
+        </span>
         {editing ? (
           <input
             ref={inputRef}
