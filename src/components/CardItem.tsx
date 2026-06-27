@@ -3,8 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import { deleteCard, moveCard, renameCard } from "@/lib/commands";
-import { COLUMN_STATUSES } from "@/store/boardStore";
+import { deleteCard, renameCard } from "@/lib/commands";
 import type { CardDTO } from "@/lib/types";
 
 export function CardItem({ card }: { card: CardDTO }) {
@@ -36,10 +35,6 @@ export function CardItem({ card }: { card: CardDTO }) {
     setEditing(false);
     renameCard(card.id, draft);
   };
-
-  const idx = COLUMN_STATUSES.indexOf(card.status);
-  const prevStatus = COLUMN_STATUSES[idx - 1];
-  const nextStatus = COLUMN_STATUSES[idx + 1];
 
   return (
     <div ref={setNodeRef} style={style} className="card">
@@ -80,22 +75,6 @@ export function CardItem({ card }: { card: CardDTO }) {
       </div>
 
       <div className="card__actions">
-        <button
-          className="iconbtn"
-          disabled={!prevStatus}
-          title="Move left"
-          onClick={() => prevStatus && moveCard(card.id, prevStatus)}
-        >
-          ◀
-        </button>
-        <button
-          className="iconbtn"
-          disabled={!nextStatus}
-          title="Move right"
-          onClick={() => nextStatus && moveCard(card.id, nextStatus)}
-        >
-          ▶
-        </button>
         <span className="card__spacer" />
         <button
           className="iconbtn iconbtn--danger"
